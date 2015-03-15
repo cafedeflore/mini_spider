@@ -5,7 +5,6 @@ import sys
 import ConfigParser
 import engine._SpiderEngine as _SpiderEngine
 
-
 def version():
     print "version 1.0.0"
 
@@ -35,6 +34,7 @@ def main():
                                      cf.getint("spider", "max_depth"), cf.getint("spider", "crawl_interval"),
                                      cf.getint("spider", "crawl_timeout"), cf.get("spider", "target_url"),
                                      cf.getint("spider", "thread_count"))
+                spider_engine
             except:
                 raise Exception("配置文件出错")
                 sys.exit(2)
