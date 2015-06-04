@@ -3,7 +3,8 @@
 import getopt
 import sys
 import ConfigParser
-import engine._SpiderEngine as _SpiderEngine
+
+import engine.SpiderEngine as SpiderEngine
 
 def version():
     print "version 1.0.0"
@@ -28,13 +29,13 @@ def main():
             # print a
             cf = ConfigParser.ConfigParser()
             cf.read(a)
-            spider_engine = _SpiderEngine._SpiderEngine()
+            spider_engine = SpiderEngine.SpiderEngine()
             try:
                 spider_engine.set_config(cf.get("spider", "url_list_file"), cf.get("spider", "output_directory"),
                                      cf.getint("spider", "max_depth"), cf.getint("spider", "crawl_interval"),
                                      cf.getint("spider", "crawl_timeout"), cf.get("spider", "target_url"),
                                      cf.getint("spider", "thread_count"))
-                spider_engine
+                # spider_engine
             except:
                 raise Exception("配置文件出错")
                 sys.exit(2)
@@ -44,5 +45,6 @@ def main():
         else:
             assert False, "unhandled option"
 
-main()
+if __name__ == "__main__":
+    main()
 # print "hello world!"
