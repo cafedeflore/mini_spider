@@ -1,35 +1,62 @@
 # coding=utf-8
 # __author__ = cafedeflore
 import Queue
+import logging
 
-import UrlParse
+import ConfigParser
 
-class SpiderEngine():
+import spider_thread
 
-    url_list_file = "/"
-    output_directory = "/"
-    max_depth = 1
-    crawl_interval = 1
-    crawl_timeout = 10
-    target_url = ".*\.(gif|png|jpg|bmp)$"
-    thread_count = 1
+
+class UrlLeaf(object):
+    """
+    A leaf of Url.
+    It has url and its level
+    """
+    def __init__(self, url="", level=0):
+        self.url = url
+        self.level = level
+
+    def __str__(self):
+        return "{0},{1}".format(self.url, str(self.level))
+
+
+class SpiderEngine(object):
+    """
+    the engine of spider.
+    set_config to setup spider.
+    start_work to power on
+    """
 
     def __init__(self):
         self.queue = Queue.Queue()
+        self.url_list_file = "/"
+        self.output_directory = "/"
+        self.max_depth = 1
+        self.crawl_interval = 1
+        self.crawl_timeout = 10
+        self.target_url = ".*\.(gif|png|jpg|bmp)$"
+        self.thread_count = 1
+        self.total_set = set()
         return
 
-    # def set_config_by_file(self, file):
-        # try:
-            # self.url_list_file =
-            # self.output_directory =
-            # self.max_depth =
-            # self.crawl_interval = crawl_interval
-            # self.crawl_timeout = crawl_timeout
-            # self.target_url = target_url
-            # self.thread_count = thread_count
+    def __str__(self):
+        return self.__getattribute__('url_list_file')
+
 
     def set_config(self, url_list_file, output_directory, max_depth, crawl_interval,
                    crawl_timeout, target_url, thread_count):
+        """
+        set the conf of spider
+        :param url_list_file:
+        :param output_directory:
+        :param max_depth:
+        :param crawl_interval:
+        :param crawl_timeout:
+        :param target_url:
+        :param thread_count:
+        :return: Error return False
+        """
         self.url_list_file = url_list_file
         self.output_directory = output_directory
         self.max_depth = max_depth
@@ -37,27 +64,69 @@ class SpiderEngine():
         self.crawl_timeout = crawl_timeout
         self.target_url = target_url
         self.thread_count = thread_count
+        if not self.set_url_queue_by_file():
+            return False
+
+        return True
+
+    def set_config_by_file(self, file):
+        """
+        get conf from file
+        :param file: the string of file
+        :return: Error return False, else return True
+        """
+        if len(file) < 1:
+            logging.error("the path of file error.file: %s." % file)
+            return False
+        cf = ConfigParser.ConfigParser()
+        try:
+            cf.read(file)
+        except Exception as err:
+            logging.error("get conf file error: %s" % err)
+            return False
+        try:
+            set_result = self.set_config(cf.get("spider", "url_list_file"), cf.get("spider", "output_directory"),
+                 cf.getint("spider", "max_depth"), cf.getint("spider", "crawl_interval"),
+                 cf.getint("spider", "crawl_timeout"), cf.get("spider", "target_url"),
+                 cf.getint("spider", "thread_count"))
+        except Exception as err:
+            logging.error("conf file format error: %s" % err)
+            return False
+        return set_result
+
+    def set_url_queue_by_file(self):
+        """
+        get the urls from file
+        :return: True. Error return False
+        """
+        try:
+            with open(self.url_list_file) as urls:
+                for url in urls:
+                    if len(url.strip(' ')) < 1:
+                        continue
+                    self.queue.put(UrlLeaf(url=url, level=0))
+        except Exception as err:
+            logging.error("get url from file error: %s ." % err)
+            return False
+        return True
 
     def start_work(self):
-        url = "http://www.baidu.com"
-        from_set = set()
-        to_set = set()
-        # while from_set.__len__() != 0:
-        to_set |= set(UrlParse.UrlParse.get_urls(url))
-        print to_set
-        res = UrlParse.UrlParse.get_files(url, "lalala")
-        for i in res:
-            UrlParse.UrlParse.download("D:\\test\\test", str(i))
-        print res
+        """
+        start to work
+        :return: nothing
+        """
+        thread_list = []
+        for i in xrange(self.thread_count):
+            thread = spider_thread.SpiderThread(self.queue, self.crawl_timeout, self.crawl_interval,
+                                                self.output_directory, self.max_depth, self.target_url, self.total_set)
+            thread_list.append(thread)
+            logging.info("thread %d start..." % i)
+            thread.start()
+        for thread in thread_list:
+            thread.join()
+            logging.info("a thread done")
+        self.queue.join()
+        logging.info("queue is all done")
 
         return
 
-    def config_tostring(self):
-        to_string = str(self.url_list_file) + str(self.output_directory) + str(self.max_depth) +\
-              str(self.crawl_interval) + str(self.crawl_timeout) + str(self.target_url) + str(self.thread_count)
-        print to_string
-        return to_string
-
-if __name__ == "__main__":
-    a = SpiderEngine()
-    a.start_work()

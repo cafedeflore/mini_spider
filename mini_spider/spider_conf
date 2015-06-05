@@ -1,0 +1,8 @@
+[spider]
+url_list_file: D:\work\python\mini_spider\mini_spider\mini_spider\urls ; 种子文件路径
+output_directory: D:\test\test ; 抓取结果存储目录
+max_depth: 5 ; 最大抓取深度(种子为0级)
+crawl_interval: 1 ; 抓取间隔. 单位: 秒
+crawl_timeout: 3 ; 抓取超时. 单位: 秒
+target_url: .*\.(html|png|jpg|bmp)$ ; 需要存储的目标网页URL pattern(正则表达式)
+thread_count: 5 ; 抓取线程数

@@ -36,4 +36,4 @@ class UrlParseTest(unittest.TestCase):
     def test_get_url(self):
         # print UrlParse.UrlParse.get_html_content("https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/"
         #                                          "static/superplus/img/logo_white_ee663702.png")
-        print UrlParse.UrlParse.get_urls("https://www.baidu.com")
+        print UrlParse.UrlParse.get_urls("http://www.baidu.com")

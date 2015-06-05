@@ -1,10 +1,7 @@
-import mini_spider.engine.parse as parse
 
-# parse.parse.get_urls("http://www.baidu.com")
-a = {1}
-b = {2}
-c = a
-a = b
-b = c
-print a
-print b
+
+import re
+a = ".*\.(gif|png|jpg|bmp)$"
+partern = re.compile(a)
+if partern.match("www.abc.com/dd.jpg"):
+    print 1

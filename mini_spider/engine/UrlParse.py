@@ -53,31 +53,6 @@ class UrlParse(object):
         return url_set
 
     @staticmethod
-    def get_files(url, regex):
-        response = None
-        content = None
-        res = []
-        try:
-            response = urllib2.urlopen(url, timeout=10)
-            content = response.read()
-        except Exception as e:
-            raise e
-
-        tag_list = ['img', 'a', 'script', 'style']
-        link_list = []
-        for i in tag_list:
-            link_list.extend(BeautifulSoup(content).findAll(i))
-
-        url_set = set()
-        for link in link_list:
-            if link.has_attr('src'):
-                url_set.add(UrlParse.deal_with_url(link['src'], url))
-            if link.has_attr('href'):
-                url_set.add(UrlParse.deal_with_url(link['href'], url))
-        print url_set
-        return res
-
-    @staticmethod
     def deal_with_url(url, base_url):
         """
         deal with url to make it complete and standard
@@ -104,15 +79,28 @@ class UrlParse(object):
         except urllib2.URLError as err:
             logging.error("url open error : %s" % url)
             return None
+        try:
+            content = response.read()
+        except Exception as err:
+            logging.error("read response error")
+            return None
 
-        content = response.read()
+        return UrlParse.decode_html(content)
+
+    @staticmethod
+    def decode_html(content):
+        """
+        decode content
+        :param content: the origin content
+        :return: returen decoded content. Error return None
+        """
         encoding = chardet.detect(content)['encoding']
         if encoding == 'GB2312':
             encoding = 'GBK'
         else:
             encoding = 'utf-8'
         try:
-            content = content.decode(encoding, 'strict')
+            content = content.decode(encoding, 'ignore')
         except Exception as err:
             logging.error("Decode error: %s.", err)
             return None
@@ -129,7 +117,9 @@ class UrlParse(object):
         try:
             path = os.path.join(local_path, url.replace('/', '_').replace(':', '_').replace('?', '_')
                                 .replace('\\', '_'))
-            # print path
+            logging.info("download url..: %s" % url)
             urllib.urlretrieve(url, path, None)
         except Exception as err:
-            logging.error("download url fail. url: %s, %s" % (url, err))
+            logging.error("download url fail. url: %s" % url)
+            return False
+        return True
