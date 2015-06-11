@@ -1,49 +1,58 @@
-#coding=utf-8
-
+# -*- coding:utf-8 -*-
+# !/usr/bin/env python
+################################################################################
+#
+# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
+#
+################################################################################
+"""
+This main module
+"""
 import getopt
 import sys
-import ConfigParser
+import log
+import logging
 
-import engine.SpiderEngine as SpiderEngine
+from engine import SpiderEngine
+
 
 def version():
+    """
+    print the version
+    """
     print "version 1.0.0"
 
+
 def main():
+    """
+    the main method to run mini spider
+    """
+    # 日志保存到./log/spider.log和./log/spider.log.wf，按天切割，保留7天
+    log.init_log("./log/spider")
+    spider = SpiderEngine.SpiderEngine()
     try:
         opts, args = getopt.getopt(sys.argv[1:], "vhc:")
     except getopt.GetoptError as err:
-        print str(err) # will print something like "option -a not recognized"
-        sys.exit(2)
+        logging.error("get option error : %s." % err)
+        return
     for o, a in opts:
         if o == "-v":
             version()
-            sys.exit()
+            return
         elif o == "-h":
             # spider_engine = _SpiderEngine._SpiderEngine()
             # spider_engine.config_tostring()
             # spider_engine.set_config()
             print "帮助信息：没有帮助^_^"
-            sys.exit()
+            return
         elif o == "-c":
-            # print a
-            cf = ConfigParser.ConfigParser()
-            cf.read(a)
-            spider_engine = SpiderEngine.SpiderEngine()
-            try:
-                spider_engine.set_config(cf.get("spider", "url_list_file"), cf.get("spider", "output_directory"),
-                                     cf.getint("spider", "max_depth"), cf.getint("spider", "crawl_interval"),
-                                     cf.getint("spider", "crawl_timeout"), cf.get("spider", "target_url"),
-                                     cf.getint("spider", "thread_count"))
-                # spider_engine
-            except:
-                raise Exception("配置文件出错")
-                sys.exit(2)
-            spider_engine.config_tostring()
-
-            # print a
+            spider.set_config_by_file(a)
         else:
-            assert False, "unhandled option"
+            logging.error("unhandled option")
+            print "unhandled option"
+            return
+    spider.start_work()
+    return
 
 if __name__ == "__main__":
     main()

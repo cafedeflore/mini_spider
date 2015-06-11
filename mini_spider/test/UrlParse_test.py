@@ -6,7 +6,7 @@
 #
 ################################################################################
 """
-This module contains global variable for default conf
+This module is the test class to test urlParse
 """
 import unittest
 
@@ -18,22 +18,38 @@ class UrlParseTest(unittest.TestCase):
     """
     def setUp(self):
         self.url = "http://www.baidu.com"
-        # self.url = "http://pycm.baidu.com:8081/"
 
     def test_get_urls(self):
-        # a = UrlParse.UrlParse()
+        """
+        test get urls in the original url
+        :return: nothing
+        """
         UrlParse.UrlParse.get_urls(self.url)
 
     def test_download(self):
-        # a = UrlParse.UrlParse()
+        """
+        test download url to file
+        :return: nothing
+        """
         UrlParse.UrlParse.download("D:\\test\\test", "https://www.baidu.com/")
 
     def test_get_html_content(self):
-        # print UrlParse.UrlParse.get_html_content("https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/"
-        #                                          "static/superplus/img/logo_white_ee663702.png")
+        """
+        get the html code from from url
+        :return: nothing
+        """
         print UrlParse.UrlParse.get_html_content("https://www.baidu.com")
 
     def test_get_url(self):
-        # print UrlParse.UrlParse.get_html_content("https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/"
-        #                                          "static/superplus/img/logo_white_ee663702.png")
-        print UrlParse.UrlParse.get_urls("https://www.baidu.com")
+        """
+        test get urls in the original url
+        :return: nothing
+        """
+        print UrlParse.UrlParse.get_urls("http://www.baidu.com")
+
+    def test_is_url(self):
+        """
+        test check url
+        :return:nothing
+        """
+        print UrlParse.UrlParse.is_url("javadscriptddddddd")
