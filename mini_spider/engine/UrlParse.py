@@ -7,6 +7,7 @@
 ################################################################################
 """
 This module is some static method for parse url, html
+author linnan01(com@baidu.com)
 """
 import os
 import urllib

@@ -7,6 +7,7 @@
 ################################################################################
 """
 This module is the test class to test spiderengine
+author linnan01(com@baidu.com)
 """
 import log
 import logging

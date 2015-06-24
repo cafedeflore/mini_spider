@@ -7,12 +7,14 @@
 ################################################################################
 """
 This module is the mutil thread class for mini_spider
+author linnan01(com@baidu.com)
 """
 
-import time
-import threading
+
 import logging
 import re
+import time
+import threading
 
 from engine import UrlParse
 from engine import SpiderEngine

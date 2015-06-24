@@ -7,11 +7,12 @@
 ################################################################################
 """
 This module is the log module Baidu.com supplies
+author linnan01(com@baidu.com)
 """
 
-import os
 import logging
 import logging.handlers
+import os
 
 def init_log(log_path, level=logging.INFO, when="D", backup=7,
              format="%(levelname)s: %(asctime)s: %(filename)s:%(lineno)d * %(thread)d %(message)s",

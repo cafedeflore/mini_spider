@@ -7,6 +7,7 @@
 ################################################################################
 """
 This module is the test class to test urlParse
+author linnan01(com@baidu.com)
 """
 import unittest
 

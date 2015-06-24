@@ -7,10 +7,11 @@
 ################################################################################
 """
 This the engine of mini spider
+author linnan01(com@baidu.com)
 """
-import Queue
 import logging
 import os
+import Queue
 
 import ConfigParser
 
